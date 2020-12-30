@@ -11,12 +11,15 @@ function setup() {
   width = window.innerWidth
   height = window.innerHeight
 
-  frameRate(10)
+  frameRate(30)
   createCanvas(width, height)
+}
 
-  for(let i = 0; i < 100; i++) {
-    bubbles.push(new Bubble())
-  }
+function mouseMoved() {
+  let bubble = new Bubble()
+  bubble.x = mouseX
+  bubble.y = mouseY
+  bubbles.push(bubble)
 }
 
 function draw() {
@@ -30,11 +33,13 @@ function draw() {
 
   fill(255, 255, 255)
   bubbles.forEach(bubble => {
-    ellipse(bubble.x, bubble.y, 10)
-    bubble.y -= 5
+    ellipse(bubble.x, bubble.y, bubble.size)
+    bubble.y -= bubble.speed
+    bubble.x += random(4) - 2
 
     if (bubble.y <= 0) {
-      bubble.y = height
+      let index = bubbles.findIndex(b => { return b.x == bubble.x && b.y == bubble.y })
+      bubbles = [...bubbles.slice(0, index), ...bubbles.slice(index + 1)]
     }
   })
 }
@@ -43,5 +48,7 @@ class Bubble {
   constructor() {
     this.x = random(width)
     this.y = random(height)
+    this.speed = random(10) + 1
+    this.size = random(10) + 1
   }
 }

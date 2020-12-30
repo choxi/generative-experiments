@@ -32,18 +32,13 @@ function draw() {
   background(0)
     // .color(lerpColor(color(255, 255, 255, 1), color(255, 0, 0, 1), 0.5))
 
-  fill(255, 255, 255)
-  ellipse(1100, 200, 200, 200)
-  // drawGradient(1100, 200, color(255, 255, 255, 4), color(255, 255, 255, 0), 600)
-  Utils.radialGradient(1100, 200, 600, 600, color(255, 255, 255, 1), color(255, 255, 255, 0))
-
-  fill(255, 255, 255)
+  fill(255, 255, 255, 100)
   Object.entries(bubbles).forEach(([id, bubble]) => {
     ellipse(bubble.x, bubble.y, bubble.size)
     bubble.y -= bubble.speed
     bubble.x += random(4) - 2
 
-    if (bubble.y >= height / 2) {
+    if (bubble.y <= (-height / 2)) {
       delete bubbles[id]
     }
   })

@@ -5,7 +5,7 @@ console.log("Starting bubble-stroke")
 
 var width = window.innerWidth
 var height = window.innerHeight
-var bubbles = []
+var bubbles = {}
 var bubbleSources = []
 
 class BubbleSource {
@@ -38,29 +38,29 @@ function draw() {
   Utils.radialGradient(1100, 200, 600, 600, color(255, 255, 255, 1), color(255, 255, 255, 0))
 
   fill(255, 255, 255)
-  bubbles.forEach(bubble => {
+  Object.entries(bubbles).forEach(([id, bubble]) => {
     ellipse(bubble.x, bubble.y, bubble.size)
     bubble.y -= bubble.speed
     bubble.x += random(4) - 2
 
     if (bubble.y >= height / 2) {
-      let index = bubbles.findIndex(b => { return b.x == bubble.x && b.y == bubble.y })
-      bubbles = [...bubbles.slice(0, index), ...bubbles.slice(index + 1)]
+      delete bubbles[id]
     }
   })
 
   bubbleSources.forEach(source => {
-    if (random(10) < 1) {
+    if (random(50) < 1) {
       let bubble = new Bubble()
       bubble.x = source.x
       bubble.y = source.y
-      bubbles.push(bubble)
+      bubbles[bubble.id] = bubble
     }
   })
 }
 
 class Bubble {
   constructor() {
+    this.id = uuidv4()
     this.x = random(width) -  width / 2
     this.y = random(height) - height / 2
     this.speed = random(10) + 1

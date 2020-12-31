@@ -8,18 +8,11 @@ var height = window.innerHeight
 var bubbles = {}
 var bubbleSources = []
 
-class BubbleSource {
-  constructor(x, y) {
-    this.x = x
-    this.y = y
-  }
-}
-
 function setup() {
   width = window.innerWidth
   height = window.innerHeight
 
-  frameRate(20)
+  frameRate(50)
   createCanvas(width, height, WEBGL)
 }
 
@@ -30,24 +23,32 @@ function mouseMoved() {
 
 function draw() {
   background(0)
+  noStroke()
     // .color(lerpColor(color(255, 255, 255, 1), color(255, 0, 0, 1), 0.5))
 
-  fill(255, 255, 255, 100)
   Object.entries(bubbles).forEach(([id, bubble]) => {
+    fill(bubble.color)
     ellipse(bubble.x, bubble.y, bubble.size)
     bubble.y -= bubble.speed
     bubble.x += random(4) - 2
+    bubble.size *= 0.9
 
-    if (bubble.y <= (-height / 2)) {
+    // if (bubble.y <= (-height / 2)) {
+    //   delete bubbles[id]
+    // }
+
+    if (bubble.y <= (bubble.originY - 100)) {
       delete bubbles[id]
     }
   })
 
   bubbleSources.forEach(source => {
-    if (random(50) < 1) {
+    if (random(2) < 1) {
       let bubble = new Bubble()
       bubble.x = source.x
       bubble.y = source.y
+      bubble.originX = source.x
+      bubble.originY = source.y
       bubbles[bubble.id] = bubble
     }
   })
@@ -58,7 +59,17 @@ class Bubble {
     this.id = uuidv4()
     this.x = random(width) -  width / 2
     this.y = random(height) - height / 2
+    this.originX = this.x
+    this.originY = this.y
     this.speed = random(10) + 1
     this.size = random(10) + 1
+    this.color = color(random(255), random(255), random(255), 100)
+  }
+}
+
+class BubbleSource {
+  constructor(x, y) {
+    this.x = x
+    this.y = y
   }
 }

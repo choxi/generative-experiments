@@ -17,6 +17,16 @@ class Utils {
       ellipse(x, y, step * w, step * h);
     }
   }
+
+  static toGPUCoordinate(x, y) {
+    let height = window.innerHeight
+    let width = window.innerWidth
+
+    let centeredX = x - width / 2
+    let centeredY = y - height / 2
+
+    return { x: centeredX, y: centeredY }
+  }
 }
 
 window.Utils = Utils

@@ -58,8 +58,8 @@ function setup() {
 function draw() {
   background(0)
 
-  path.x = path.x + random(2) - 1
-  path.y = path.y + random(2) - 1
+  path.x = path.x + random(-10, 10)
+  path.y = path.y + random(-10, 10)
 
   path.render()
 }

@@ -38,12 +38,12 @@ class Planet {
       return
     }
 
-    let scale = 100000
+    let scale = 1000
 
     let { x, y, mass, velocity } = this
     let vector = new Vector((otherPlanet.x - x)*scale, (otherPlanet.y - y)*scale)
     let distance = Math.sqrt(Math.pow(vector.x, 2) + Math.pow(vector.y, 2))
-    let force = otherPlanet.mass * mass / Math.pow(distance, 3)
+    let force = otherPlanet.mass * mass / Math.pow(distance, 2)
     let acceleration = force / mass
     let newVelocity = new Vector(velocity.x + acceleration * vector.x, velocity.y + acceleration * vector.y)
     this.velocity = newVelocity
@@ -59,9 +59,13 @@ class Planet {
 
 function randomPlanet() {
   let planet = new Planet()
-  planet.velocity = new Vector(random(-20, 20) / 10, random(-20, 20) / 10)
+  let range = 200
+  planet.velocity = new Vector(random(-range, range) / 10, random(-range, range) / 10)
   planet.x = random(- window.innerWidth / 2, window.innerWidth / 2)
   planet.y = random(- window.innerHeight / 2, window.innerHeight / 2)
+  // let rangeB = 100
+  // planet.x = random(-rangeB, rangeB)
+  // planet.y = random(-rangeB, rangeB)
   planet.mass = random(200, 2000)
   planet.color = color(random(255), random(255), random(255))
   return planet
@@ -112,10 +116,10 @@ function draw() {
         let otherPlanet = planets[otherID]
         planet.applyForceFrom(otherPlanet)
 
-        // let destroyed = collide(planet, otherPlanet)
-        // if (destroyed != null) {
-        //   toDelete.push(destroyed)
-        // }
+        let destroyed = collide(planet, otherPlanet)
+        if (destroyed != null) {
+          toDelete.push(destroyed)
+        }
       }
     })
 

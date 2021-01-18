@@ -28,7 +28,7 @@ let app = new p5(p => {
       building.x = p.random(- width / 2, width / 2)
       building.height = p.random(50, 300)
       building.width = p.random(10, 100)
-      building.y = height / 2 - building.height
+      building.y = - height / 2 // height / 2 - building.height
       buildings.push(building)
     }
 
@@ -67,8 +67,8 @@ class Building {
     let { x, y, height, width } = this
     let borderWidth = 2
 
-    buffer.fill(55, 55, 55)
-    buffer.rect(x - borderWidth, y - borderWidth, width + 2*borderWidth, height + 2*borderWidth)
+    // buffer.fill(55, 55, 55)
+    // buffer.rect(x - borderWidth, y - borderWidth, width + 2*borderWidth, height + 2*borderWidth)
     buffer.fill(25, 25, 25)
     buffer.rect(x, y, width, height)
 

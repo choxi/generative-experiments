@@ -27,8 +27,10 @@ function setup() {
 function draw() {
   let sunWidth = 200
   let sunHeight = 200
-  let colorB = color(230, 126, 34)
-  let colorA = color(241, 196, 15)
+  // let colorB = color(230, 126, 34)
+  // let colorA = color(241, 196, 15)
+  let colorB = color(52, 152, 219)
+  let colorA = color(31, 118, 175)
   let rows = 10
   let columns = 10
 

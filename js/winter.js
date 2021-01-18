@@ -69,6 +69,7 @@ class Building {
 
     // buffer.fill(55, 55, 55)
     // buffer.rect(x - borderWidth, y - borderWidth, width + 2*borderWidth, height + 2*borderWidth)
+    buffer.noStroke()
     buffer.fill(25, 25, 25)
     buffer.rect(x, y, width, height)
 

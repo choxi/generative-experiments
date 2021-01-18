@@ -1,4 +1,6 @@
-console.log("Starting snake-noise")
+console.log("Starting snake-lasers")
+
+import p5 from "p5"
 
 // Auto-reload the page
 // setInterval(() => { location.reload() }, 10000)
@@ -14,8 +16,8 @@ class Path {
     let range = 100
 
     for(let i = 0; i < 40; i++) {
-      let x = this.x + random(range) - range / 2
-      let y = this.y + random(range) - range / 2
+      let x = this.x + app.random(range) - range / 2
+      let y = this.y + app.random(range) - range / 2
       squares.push(new Square(x, y))
     }
 
@@ -27,18 +29,18 @@ class Laser {
   constructor(x, y) {
     this.x = x
     this.y = y
-    this.vectorX = random(0, 10)
-    this.vectorY = random(0, 10)
+    this.vectorX = app.random(0, 10)
+    this.vectorY = app.random(0, 10)
   }
 
-  render() {
-    fill(0, 0, 255, 255)
+  render(context) {
+    context.fill(0, 0, 255, 255)
 
     for(let i = 0; i < 20; i++) {
       let x = this.x + (i / 20) * 100
       let y = this.y + (i / 20) * 100
-      fill(0, 0, 255, ((i / 20)) * 255)
-      rect(x, y, 10, 10)
+      context.fill(0, 0, 255, ((i / 20)) * 255)
+      context.rect(x, y, 10, 10)
     }
   }
 
@@ -54,31 +56,33 @@ var squares = []
 var path;
 var lasers = []
 
-function setup() {
-  width = window.innerWidth
-  height = window.innerHeight
+let app = new p5(p => {
+  p.setup = function() {
+    width = window.innerWidth
+    height = window.innerHeight
 
-  frameRate(5)
-  createCanvas(width, height, WEBGL)
-  noStroke()
+    p.frameRate(5)
+    p.createCanvas(width, height, p.WEBGL)
+    p.noStroke()
 
-  fill(0, 0, 255)
-  ellipse(100, 100, 200, 200)
+    p.fill(0, 0, 255)
+    p.ellipse(100, 100, 200, 200)
 
-  for(let i = 0; i < 1; i++) {
-    let laser = new Laser(0, 0)
-    lasers.push(laser)
+    for(let i = 0; i < 1; i++) {
+      let laser = new Laser(0, 0)
+      lasers.push(laser)
+    }
   }
-}
 
-function draw() {
-  fill(0, 0, 0, 255)
-  rect(-(width/2), -(height/2), width, height)
-  // fill(0, 0, 255, ((10 / 20)) * 255)
-  // rect(0, 0, 100, 100)
+  p.draw = function() {
+    p.fill(0, 0, 0, 255)
+    p.rect(-(width/2), -(height/2), width, height)
+    // fill(0, 0, 255, ((10 / 20)) * 255)
+    // rect(0, 0, 100, 100)
 
-  lasers.forEach(laser => {
-    laser.step()
-    laser.render()
-  })
-}
+    lasers.forEach(laser => {
+      laser.step()
+      laser.render(p)
+    })
+  }
+})

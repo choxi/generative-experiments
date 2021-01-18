@@ -12,9 +12,6 @@ var height = window.innerHeight
 var buildings = []
 var layerBuffer
 
-let app = new p5((p) => {
-})
-
 function setup() {
   console.log("setup")
   width = window.innerWidth
@@ -24,19 +21,13 @@ function setup() {
   createCanvas(width, height, WEBGL)
   noStroke()
 
-  layerBuffer = createGraphics(width, height)
+  layerBuffer = createGraphics(width, height, WEBGL)
 
   for (var i = 0; i < 2000; i++) {
     let droplet = new Droplet()
     droplet.y = random(- height / 2, height / 2)
     droplet.x = random( - width / 2, width / 2)
     droplets.push(droplet)
-  }
-
-  for(var i = 0; i < 1; i++) {
-    let tree = new Tree()
-    tree.x = random(width)
-    trees.push(tree)
   }
 
   for(let i = 0; i < 100; i++) {
@@ -55,16 +46,9 @@ function setup() {
 function draw() {
   background(0)
   image(layerBuffer, -width / 2, - height / 2)
-    // .color(lerpColor(color(255, 255, 255, 1), color(255, 0, 0, 1), 0.5))
-
-  // trees.forEach(tree => {
-  //   tree.render()
-  // })
 
   fill(255, 255, 255)
   ellipse(1100, 200, 200, 200)
-  // drawGradient(1100, 200, color(255, 255, 255, 4), color(255, 255, 255, 0), 600)
-  // Utils.radialGradient(1100, 200, 600, 600, color(255, 255, 255, 1), color(255, 255, 255, 0))
 
   droplets.forEach(droplet => {
     fill(droplet.color)
@@ -88,11 +72,11 @@ class Building {
   render(buffer) {
     let { x, y, height, width } = this
     let borderWidth = 2
-    // fill(155, 155, 155)
-    // buffer.fill(0)
-    // buffer.rect(x - borderWidth, y - borderWidth, width + 2*borderWidth, height + 2*borderWidth)
-    // buffer.fill(25, 25, 25)
-    // buffer.rect(x, y, width, height)
+
+    buffer.fill(0)
+    buffer.rect(x - borderWidth, y - borderWidth, width + 2*borderWidth, height + 2*borderWidth)
+    buffer.fill(25, 25, 25)
+    buffer.rect(x, y, width, height)
 
     let windowHeight = 3
     let windowWidth = 3
@@ -108,25 +92,6 @@ class Building {
         buffer.rect(wX, wY, windowWidth, windowHeight)
       }
     }
-  }
-}
-
-class Tree {
-  constructor() {
-    this.x = 100
-    this.y = height - 200
-  }
-
-  render() {
-    fill(0, 255, 0)
-    triangle(this.x, this.y, this.x - 50, this.y + 100, this.x + 50, this.y + 100)
-      .noStroke()
-    var newY = this.y + 50
-    triangle(this.x, newY, this.x - 50, newY + 100, this.x + 50, newY + 100)
-      .noStroke()
-    var newY = this.y + 100
-    triangle(this.x, newY, this.x - 50, newY + 100, this.x + 50, newY + 100)
-      .noStroke()
   }
 }
 

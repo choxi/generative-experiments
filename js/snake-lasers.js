@@ -2,8 +2,37 @@ console.log("Starting snake-lasers")
 
 import p5 from "p5"
 
-// Auto-reload the page
-// setInterval(() => { location.reload() }, 10000)
+var width = window.innerWidth
+var height = window.innerHeight
+var lasers = []
+
+let app = new p5(p => {
+  p.setup = function() {
+    p.frameRate(5)
+    p.createCanvas(width, height, p.WEBGL)
+    p.noStroke()
+
+    p.fill(0, 0, 255)
+    p.ellipse(100, 100, 200, 200)
+
+    for(let i = 0; i < 1; i++) {
+      let laser = new Laser(0, 0)
+      lasers.push(laser)
+    }
+  }
+
+  p.draw = function() {
+    p.fill(0, 0, 0, 255)
+    p.rect(-(width/2), -(height/2), width, height)
+    // fill(0, 0, 255, ((10 / 20)) * 255)
+    // rect(0, 0, 100, 100)
+
+    lasers.forEach(laser => {
+      laser.step()
+      laser.render(p)
+    })
+  }
+})
 
 class Path {
   constructor() {
@@ -49,40 +78,3 @@ class Laser {
     this.y += this.vectorY
   }
 }
-
-var width = window.innerWidth
-var height = window.innerHeight
-var squares = []
-var path;
-var lasers = []
-
-let app = new p5(p => {
-  p.setup = function() {
-    width = window.innerWidth
-    height = window.innerHeight
-
-    p.frameRate(5)
-    p.createCanvas(width, height, p.WEBGL)
-    p.noStroke()
-
-    p.fill(0, 0, 255)
-    p.ellipse(100, 100, 200, 200)
-
-    for(let i = 0; i < 1; i++) {
-      let laser = new Laser(0, 0)
-      lasers.push(laser)
-    }
-  }
-
-  p.draw = function() {
-    p.fill(0, 0, 0, 255)
-    p.rect(-(width/2), -(height/2), width, height)
-    // fill(0, 0, 255, ((10 / 20)) * 255)
-    // rect(0, 0, 100, 100)
-
-    lasers.forEach(laser => {
-      laser.step()
-      laser.render(p)
-    })
-  }
-})

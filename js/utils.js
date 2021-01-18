@@ -1,4 +1,4 @@
-class Utils {
+export default class Utils {
   static drawGradient(x, y, colorA, colorB, radius) {
     for (let r = radius; r > 0; --r) {
       // let blended = blendColors(colorA, colorB, r / radius)

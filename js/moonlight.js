@@ -1,28 +1,36 @@
 console.log("moonlight")
 
-// Auto-reload the page
-// setInterval(() => { location.reload() }, 10000)
-
-class Droplet {
-  constructor() {
-    this.x = 0
-    this.y = 0
-    this.size = random(10) + 2.5
-    this.speed = this.size / 5
-  }
-
-  move(x, y) {
-    this.x = x
-    this.y = y
-  }
-}
-
 var droplets = []
 var trees = []
 var backgroundSetting = 0
 var offset = 0
 var width = window.innerWidth
 var height = window.innerHeight
+
+function draw() {
+  console.log("draw")
+  background(0)
+    // .color(lerpColor(color(255, 255, 255, 1), color(255, 0, 0, 1), 0.5))
+
+  trees.forEach(tree => {
+    tree.render()
+  })
+
+  fill(255, 255, 255)
+  ellipse(1100, 200, 200, 200)
+  // drawGradient(1100, 200, color(255, 255, 255, 4), color(255, 255, 255, 0), 600)
+  Utils.radialGradient(1100, 200, 600, 600, color(255, 255, 255, 1), color(255, 255, 255, 0))
+
+  droplets.forEach(droplet => {
+    fill(255, 255, 255)
+    ellipse(droplet.x, droplet.y, droplet.size, droplet.size)
+    droplet.y += droplet.speed
+
+    if (droplet.y > height) {
+      droplet.y = 0
+    }
+  })
+}
 
 setup = function() {
   console.log("setup")
@@ -65,29 +73,18 @@ class Tree {
   }
 }
 
-function draw() {
-  console.log("draw")
-  background(0)
-    // .color(lerpColor(color(255, 255, 255, 1), color(255, 0, 0, 1), 0.5))
+class Droplet {
+  constructor() {
+    this.x = 0
+    this.y = 0
+    this.size = random(10) + 2.5
+    this.speed = this.size / 5
+  }
 
-  trees.forEach(tree => {
-    tree.render()
-  })
-
-  fill(255, 255, 255)
-  ellipse(1100, 200, 200, 200)
-  // drawGradient(1100, 200, color(255, 255, 255, 4), color(255, 255, 255, 0), 600)
-  Utils.radialGradient(1100, 200, 600, 600, color(255, 255, 255, 1), color(255, 255, 255, 0))
-
-  droplets.forEach(droplet => {
-    fill(255, 255, 255)
-    ellipse(droplet.x, droplet.y, droplet.size, droplet.size)
-    droplet.y += droplet.speed
-
-    if (droplet.y > height) {
-      droplet.y = 0
-    }
-  })
+  move(x, y) {
+    this.x = x
+    this.y = y
+  }
 }
 
 function blendColors(colorA, colorB, percentage) {

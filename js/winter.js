@@ -1,65 +1,59 @@
-console.log("moonlight")
+console.log("winter")
 
-// Auto-reload the page
-// setInterval(() => { location.reload() }, 10000)
+import p5 from "p5"
 
 var droplets = []
-var trees = []
-var backgroundSetting = 0
-var offset = 0
 var width = window.innerWidth
 var height = window.innerHeight
 var buildings = []
 var layerBuffer
 
-function setup() {
-  console.log("setup")
-  width = window.innerWidth
-  height = window.innerHeight
+let app = new p5(p => {
+  p.setup = function() {
+    p.frameRate(30)
+    p.createCanvas(width, height, p.WEBGL)
+    p.noStroke()
 
-  frameRate(30)
-  createCanvas(width, height, WEBGL)
-  noStroke()
+    layerBuffer = p.createGraphics(width, height, p.WEBGL)
 
-  layerBuffer = createGraphics(width, height, WEBGL)
-
-  for (var i = 0; i < 2000; i++) {
-    let droplet = new Droplet()
-    droplet.y = random(- height / 2, height / 2)
-    droplet.x = random( - width / 2, width / 2)
-    droplets.push(droplet)
-  }
-
-  for(let i = 0; i < 100; i++) {
-    let building = new Building()
-    building.x = random(- width / 2, width / 2)
-    building.height = random(50, 300)
-    building.width = random(10, 100)
-    building.y = height / 2 - building.height
-    buildings.push(building)
-  }
-
-  buildings.forEach(building => building.render(layerBuffer))
-}
-
-
-function draw() {
-  background(0)
-  image(layerBuffer, -width / 2, - height / 2)
-
-  fill(255, 255, 255)
-  ellipse(1100, 200, 200, 200)
-
-  droplets.forEach(droplet => {
-    fill(droplet.color)
-    ellipse(droplet.x, droplet.y, droplet.size, droplet.size)
-    droplet.y += droplet.speed
-
-    if (droplet.y > height / 2) {
-      droplet.y = - height / 2
+    for (var i = 0; i < 2000; i++) {
+      let droplet = new Droplet()
+      droplet.y = p.random(- height / 2, height / 2)
+      droplet.x = p.random( - width / 2, width / 2)
+      droplets.push(droplet)
     }
-  })
-}
+
+    for(let i = 0; i < 100; i++) {
+      let building = new Building()
+      building.x = p.random(- width / 2, width / 2)
+      building.height = p.random(50, 300)
+      building.width = p.random(10, 100)
+      building.y = height / 2 - building.height
+      buildings.push(building)
+    }
+
+    buildings.forEach(building => building.render(layerBuffer))
+  }
+
+
+  p.draw = function() {
+    p.background(0)
+    p.image(layerBuffer, -width / 2, - height / 2)
+
+    p.fill(255, 255, 255)
+    p.ellipse(1100, 200, 200, 200)
+
+    droplets.forEach(droplet => {
+      p.fill(droplet.color)
+      p.ellipse(droplet.x, droplet.y, droplet.size, droplet.size)
+      droplet.y += droplet.speed
+
+      if (droplet.y > height / 2) {
+        droplet.y = - height / 2
+      }
+    })
+  }
+})
 
 class Building {
   constructor() {
@@ -73,7 +67,7 @@ class Building {
     let { x, y, height, width } = this
     let borderWidth = 2
 
-    buffer.fill(0)
+    buffer.fill(55, 55, 55)
     buffer.rect(x - borderWidth, y - borderWidth, width + 2*borderWidth, height + 2*borderWidth)
     buffer.fill(25, 25, 25)
     buffer.rect(x, y, width, height)
@@ -99,22 +93,13 @@ class Droplet {
   constructor() {
     this.x = 0
     this.y = 0
-    this.size = random(2)
-    this.speed = this.size / 5 + random(2)
-    this.color = color(255, 255, 255, random(1, 255))
+    this.size = app.random(2)
+    this.speed = this.size / 5 + app.random(2)
+    this.color = app.color(255, 255, 255, app.random(1, 255))
   }
 
   move(x, y) {
     this.x = x
     this.y = y
   }
-}
-
-function blendColors(colorA, colorB, percentage) {
-  let blendedRed = colorA._getRed() * (1 - percentage) + colorB._getRed() * percentage
-  let blendedGreen = colorA._getGreen() * (1 - percentage) + colorB._getGreen() * percentage
-  let blendedBlue = colorA._getBlue() * (1 - percentage) + colorB._getBlue() * percentage
-  let blendedAlpha = colorA._getAlpha() * (1 - percentage) + colorB._getAlpha() * percentage
-
-  return color(blendedRed, blendedGreen, blendedBlue, blendedAlpha)
 }

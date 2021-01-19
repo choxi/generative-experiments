@@ -40,8 +40,17 @@ let app = new p5(p => {
     for(let i = 0; i < 100; i++) {
       let building = new Building()
       building.x = p.random(- width / 2, width / 2)
-      building.height = p.random(50, 300)
+      building.height = p.random(40, 300)
       building.width = p.random(10, 100)
+      building.y = - height / 2 // height / 2 - building.height
+      buildings.push(building)
+    }
+
+    for(let i = 0; i < 5; i++) {
+      let building = new Building()
+      building.x = p.random(- width / 2, width / 2)
+      building.height = p.random(300, 600)
+      building.width = p.random(40, 100)
       building.y = - height / 2 // height / 2 - building.height
       buildings.push(building)
     }

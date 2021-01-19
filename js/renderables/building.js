@@ -36,27 +36,32 @@ export default class Building {
     let padding = 2
     let windowHeight = 3
     let windowWidth = 3
-    let windowPad = 2
+    let windowSpacing = 5
     // bg = building background
+    // the windows will align to the edges of this background.
     let bgHeight = height - 2*padding
     let bgWidth = width - 2*padding
-    let paddedWindowHeight = windowHeight + windowPad * 2
-    let paddedWindowWidth = windowWidth + windowPad * 2
 
-    let rows = Math.floor(bgHeight / paddedWindowHeight)
-    let columns = Math.floor(bgWidth / paddedWindowWidth)
+    // windowSpacing is how much spacing is between each column or row, i.e:
+    // totalWidth = columns * windowWidth + (columns - 1) * windowSpacing
+    let rows = Math.floor((bgHeight + windowSpacing) / (windowHeight + windowSpacing))
+    let columns = Math.floor((bgWidth + windowSpacing) / (windowWidth + windowSpacing))
 
-    let extraPadW = (bgWidth - columns * paddedWindowWidth) / 2
-    let extraPadH = (bgHeight - rows * paddedWindowHeight) / 2
+    // Add the extra padding evenly horizontally and vertically
+    let extraSpaceX = (bgWidth - columns * windowWidth - (columns - 1) * windowSpacing)
+    let extraSpaceY = (bgHeight - rows * windowHeight - (rows - 1) * windowSpacing)
+
+    let finalSpacingX = windowSpacing + extraSpaceX / (columns - 1)
+    let finalSpacingY = windowSpacing + extraSpaceY / (rows - 1)
 
     // context.fill(255, 0, 0)
-    // context.rect(x + padding + extraPadW, y + padding + extraPadH, bgWidth, bgHeight)
+    // context.rect(x + padding + extraSpaceX, y + padding + extraSpaceY, bgWidth, bgHeight)
 
     context.fill(55, 55, 55)
     for(let r = 0; r < rows; r++) {
       for(let c = 0; c < columns; c++) {
-        let wX = x + padding + extraPadW + c * (paddedWindowWidth)
-        let wY = y + padding + extraPadH + r * (paddedWindowHeight)
+        let wX = x + padding + c * (windowWidth + finalSpacingX)
+        let wY = y + padding + r * (windowHeight + finalSpacingY)
         if (context.random(10) < 2) {
           context.fill(120, 120, 100, context.random(100, 255))
         } else {

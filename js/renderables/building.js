@@ -1,9 +1,11 @@
+import Utils from "../utils"
+
 export default class Building {
   constructor() {
     this.x = 0
     this.y = 0
-    this.height = 100
-    this.width = 100
+    this.height = Utils.random(10, 100)
+    this.width = Utils.random(10, 100)
   }
 
   render(context) {

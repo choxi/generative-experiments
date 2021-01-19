@@ -1,4 +1,13 @@
 export default class Utils {
+  static random(range, endRange=-1) {
+    if (endRange == -1) {
+      endRange = range
+      range = 0
+    }
+
+    return Math.floor(Math.random() * endRange) + range
+  }
+
   static drawGradient(x, y, colorA, colorB, radius) {
     for (let r = radius; r > 0; --r) {
       // let blended = blendColors(colorA, colorB, r / radius)

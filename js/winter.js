@@ -5,12 +5,15 @@ import Building from "./renderables/building"
 
 // TODO
 //
+// - [ ] More building types (sears tower, colored lights on top)
+//   * [x] Add roofs
+//   * [ ] Add staggers
 // - [ ] Animate lights changing (need a way to update background layers)
 // - [ ] Add moon
 // - [ ] Add moving clouds
 // - [ ] Add background lighting, texture, gradient
-// - [ ] More building types (sears tower, colored lights on top)
 // - [ ] Horizontal scrolling?
+// - [ ] Utility for spacing correctly
 
 var droplets = []
 var width = window.innerWidth
@@ -25,6 +28,7 @@ let app = new p5(p => {
     p.noStroke()
 
     layerBuffer = p.createGraphics(width, height, p.WEBGL)
+    layerBuffer.background(0, 0, 0)
 
     for (var i = 0; i < 2000; i++) {
       let droplet = new Droplet()

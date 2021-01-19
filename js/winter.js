@@ -1,6 +1,16 @@
 console.log("winter")
 
 import p5 from "p5"
+import Building from "./renderables/building"
+
+// TODO
+//
+// - [ ] Animate lights changing (need a way to update background layers)
+// - [ ] Add moon
+// - [ ] Add moving clouds
+// - [ ] Add background lighting, texture, gradient
+// - [ ] More building types (sears tower, colored lights on top)
+// - [ ] Horizontal scrolling?
 
 var droplets = []
 var width = window.innerWidth
@@ -54,41 +64,6 @@ let app = new p5(p => {
     })
   }
 })
-
-class Building {
-  constructor() {
-    this.x = 0
-    this.y = 0
-    this.height = 100
-    this.width = 100
-  }
-
-  render(buffer) {
-    let { x, y, height, width } = this
-    let borderWidth = 2
-
-    // buffer.fill(55, 55, 55)
-    // buffer.rect(x - borderWidth, y - borderWidth, width + 2*borderWidth, height + 2*borderWidth)
-    buffer.noStroke()
-    buffer.fill(25, 25, 25)
-    buffer.rect(x, y, width, height)
-
-    let windowHeight = 3
-    let windowWidth = 3
-    let padding = 4
-    let rows = Math.floor(height / (windowHeight + padding))
-    let columns = Math.floor(width / (windowWidth + padding))
-
-    buffer.fill(55, 55, 55)
-    for(let r = 0; r < rows; r++) {
-      for(let c = 0; c < columns; c++) {
-        let wX = x + c * (windowWidth + padding) + padding / 2
-        let wY = y + r * (windowHeight + padding) + padding / 2
-        buffer.rect(wX, wY, windowWidth, windowHeight)
-      }
-    }
-  }
-}
 
 class Droplet {
   constructor() {

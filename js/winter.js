@@ -73,7 +73,7 @@ class Droplet {
   constructor() {
     this.x = 0
     this.y = 0
-    this.size = app.random(2)
+    this.size = Utils.random(50) / 50
     this.speed = this.size / 5 + app.random(2)
     this.color = app.color(255, 255, 255, app.random(1, 255))
   }

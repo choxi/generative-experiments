@@ -19,7 +19,7 @@ export default class Building {
     let { x, y, height, width, hasRoof, color } = this
 
     let borderWidth = 2
-    let roofHeight = Utils.random(10, 20)
+    let roofHeight = Utils.random(10, 30)
 
     context.noStroke()
     context.fill(color.r, color.g, color.b)
@@ -33,17 +33,30 @@ export default class Building {
       context.triangle(pointA.x, pointA.y, pointB.x, pointB.y, pointC.x, pointC.y)
     }
 
+    let padding = 2
     let windowHeight = 3
     let windowWidth = 3
-    let padding = 4
-    let rows = Math.floor(height / (windowHeight + padding))
-    let columns = Math.floor(width / (windowWidth + padding))
+    let windowPad = 2
+    // bg = building background
+    let bgHeight = height - 2*padding
+    let bgWidth = width - 2*padding
+    let paddedWindowHeight = windowHeight + windowPad * 2
+    let paddedWindowWidth = windowWidth + windowPad * 2
+
+    let rows = Math.floor(bgHeight / paddedWindowHeight)
+    let columns = Math.floor(bgWidth / paddedWindowWidth)
+
+    let extraPadW = (bgWidth - columns * paddedWindowWidth) / 2
+    let extraPadH = (bgHeight - rows * paddedWindowHeight) / 2
+
+    // context.fill(255, 0, 0)
+    // context.rect(x + padding + extraPadW, y + padding + extraPadH, bgWidth, bgHeight)
 
     context.fill(55, 55, 55)
     for(let r = 0; r < rows; r++) {
       for(let c = 0; c < columns; c++) {
-        let wX = x + c * (windowWidth + padding) + padding / 2
-        let wY = y + r * (windowHeight + padding) + padding / 2
+        let wX = x + padding + extraPadW + c * (paddedWindowWidth)
+        let wY = y + padding + extraPadH + r * (paddedWindowHeight)
         if (context.random(10) < 2) {
           context.fill(120, 120, 100, context.random(100, 255))
         } else {

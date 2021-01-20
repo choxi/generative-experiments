@@ -5,7 +5,9 @@ export default class Utils {
       range = 0
     }
 
-    return Math.floor(Math.random() * endRange) + range
+    let rangeWidth = endRange - range
+
+    return Math.floor(Math.random() * rangeWidth) + range
   }
 
   static drawGradient(x, y, colorA, colorB, radius) {

@@ -9,11 +9,11 @@ import Building from "./renderables/building"
 //   * [x] Add roofs
 //   * [ ] Add staggers
 // - [ ] Animate lights changing (need a way to update background layers)
-// - [ ] Add moon
+// - [x] Add moon
 // - [ ] Add moving clouds
 // - [ ] Add background lighting, texture, gradient
-// - [ ] Horizontal scrolling?
-// - [ ] Utility for spacing correctly
+// - [x] Horizontal scrolling?
+// - [x] Space windows correctly
 
 var droplets = []
 var width = window.innerWidth

@@ -22,15 +22,18 @@ var buildings = []
 var layerBuffer
 
 let app = new p5(p => {
+  var t = 0
+
   p.setup = function() {
     p.frameRate(30)
     p.createCanvas(width, height, p.WEBGL)
     p.noStroke()
 
-    layerBuffer = p.createGraphics(width, height, p.WEBGL)
-    layerBuffer.background(0, 0, 0)
+    layerBuffer = p.createGraphics(width * 2, height, p.WEBGL)
+    layerBuffer.noStroke()
+    layerBuffer.background(0, 0, 0, 0)
 
-    for (var i = 0; i < 2000; i++) {
+    for (var i = 0; i < 4000; i++) {
       let droplet = new Droplet()
       droplet.y = p.random(- height / 2, height / 2)
       droplet.x = p.random( - width / 2, width / 2)
@@ -39,7 +42,7 @@ let app = new p5(p => {
 
     for(let i = 0; i < 100; i++) {
       let building = new Building()
-      building.x = p.random(- width / 2, width / 2)
+      building.x = p.random(- width, width)
       building.height = p.random(40, 300)
       building.width = p.random(10, 100)
       building.y = - height / 2 // height / 2 - building.height
@@ -48,7 +51,7 @@ let app = new p5(p => {
 
     for(let i = 0; i < 5; i++) {
       let building = new Building()
-      building.x = p.random(- width / 2, width / 2)
+      building.x = p.random(- width, width)
       building.height = p.random(300, 600)
       building.width = p.random(40, 100)
       building.y = - height / 2 // height / 2 - building.height
@@ -58,13 +61,14 @@ let app = new p5(p => {
     buildings.forEach(building => building.render(layerBuffer))
   }
 
-
   p.draw = function() {
     p.background(0)
-    p.image(layerBuffer, -width / 2, - height / 2)
 
-    p.fill(255, 255, 255)
-    p.ellipse(1100, 200, 200, 200)
+    // Moon
+    p.fill(255, 255, 255, 150)
+    p.ellipse(width / 2 - 200 - t / 5, - height / 2 + 200 - t / 10, 200, 200, 40)
+
+    p.image(layerBuffer, -width / 2 - t, - height / 2)
 
     droplets.forEach(droplet => {
       p.fill(droplet.color)
@@ -75,6 +79,8 @@ let app = new p5(p => {
         droplet.y = - height / 2
       }
     })
+
+    t++
   }
 })
 
@@ -82,7 +88,7 @@ class Droplet {
   constructor() {
     this.x = 0
     this.y = 0
-    this.size = Utils.random(50) / 50
+    this.size = Utils.random(10) / 5
     this.speed = this.size / 5 + app.random(2)
     this.color = app.color(255, 255, 255, app.random(1, 255))
   }

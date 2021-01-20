@@ -19,24 +19,30 @@ var droplets = []
 var width = window.innerWidth
 var height = window.innerHeight
 var buildings = []
-var layerBuffer
-var buffer2
+var bufferA
+var bufferB
+var bufferC
 
 let app = new p5(p => {
   var t = 0
+  var totalT = 0
 
   p.setup = function() {
     p.frameRate(30)
     p.createCanvas(width, height, p.WEBGL)
     p.noStroke()
 
-    layerBuffer = p.createGraphics(width, height, p.WEBGL)
-    layerBuffer.noStroke()
-    layerBuffer.background(0, 0, 0, 0)
+    bufferA = p.createGraphics(width, height, p.WEBGL)
+    bufferA.noStroke()
+    bufferA.background(0, 0, 0, 0)
 
-    buffer2 = p.createGraphics(width, height, p.WEBGL)
-    buffer2.noStroke()
-    buffer2.background(0, 0, 0, 0)
+    bufferB = p.createGraphics(width, height, p.WEBGL)
+    bufferB.noStroke()
+    bufferB.background(0, 0, 0, 0)
+
+    bufferC = p.createGraphics(width, height, p.WEBGL)
+    bufferC.noStroke()
+    bufferC.background(0, 0, 0, 0)
 
     for (var i = 0; i < 2000; i++) {
       let droplet = new Droplet()
@@ -46,24 +52,23 @@ let app = new p5(p => {
     }
 
     buildings = generateBuildings()
-    buildings.forEach(building => building.render(layerBuffer))
+    buildings.forEach(building => building.render(bufferA))
     buildings = nextBuildings(buildings)
-    buildings.forEach(building => building.render(buffer2))
+    buildings.forEach(building => building.render(bufferB))
+    buildings = nextBuildings(buildings)
+    buildings.forEach(building => building.render(bufferC))
   }
 
   p.draw = function() {
+    let speed = 2
     p.background(0)
 
     // Moon
     p.fill(255, 255, 255, 150)
-    p.ellipse(width / 2 - 200 - t / 5, - height / 2 + 200 - t / 10, 200, 200, 40)
+    p.ellipse(width / 2 - 200 - totalT / 5, - height / 2 + 200 - totalT / 10, 200, 200, 40)
 
-    if (t*4 > width / 2) {
-
-    }
-
-    p.image(layerBuffer, -width / 2 - t * 4, - height / 2)
-    p.image(buffer2, -width / 2 - t * 4 + width, - height / 2)
+    p.image(bufferA, -width / 2 - t * speed, - height / 2)
+    p.image(bufferB, -width / 2 - t * speed + width, - height / 2)
 
     droplets.forEach(droplet => {
       p.fill(droplet.color)
@@ -75,7 +80,19 @@ let app = new p5(p => {
       }
     })
 
-    t++
+    if ((t+1)*speed > width) {
+      console.log("switch")
+      t = 1
+      buildings = nextBuildings(buildings)
+      bufferA = bufferB
+      bufferB = bufferC
+      bufferC = p.createGraphics(width, height, p.WEBGL)
+      buildings.forEach(b => b.render(bufferC))
+    } else {
+      t++
+    }
+
+    totalT++
   }
 })
 

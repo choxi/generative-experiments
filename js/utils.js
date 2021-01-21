@@ -1,3 +1,6 @@
+const Y_AXIS = 1
+const X_AXIS = 2
+
 export default class Utils {
   static random(range, endRange=-1) {
     if (endRange == -1) {
@@ -8,6 +11,26 @@ export default class Utils {
     let rangeWidth = endRange - range
 
     return Math.floor(Math.random() * rangeWidth) + range
+  }
+  static setGradient(p, x, y, w, h, c1, c2, axis) {
+    p.noStroke()
+    if (axis === Y_AXIS) {
+      // Top to bottom gradient
+      for (let i = y; i <= y + h; i++) {
+        let inter = p.map(i, y, y + h, 0, 1);
+        let c = p.lerpColor(c1, c2, inter);
+        p.fill(c);
+        p.rect(x, i, w, 1);
+      }
+    } else if (axis === X_AXIS) {
+      // Left to right gradient
+      for (let i = x; i <= x + w; i++) {
+        let inter = p.map(i, x, x + w, 0, 1);
+        let c = p.lerpColor(c1, c2, inter);
+        p.fill(c);
+        p.rect(i, y, 1, h);
+      }
+    }
   }
 
   static drawGradient(x, y, colorA, colorB, radius) {

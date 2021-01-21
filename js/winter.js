@@ -22,6 +22,7 @@ var buildings = []
 var bufferA
 var bufferB
 var bufferC
+var gradient
 
 let app = new p5(p => {
   var t = 0
@@ -44,6 +45,10 @@ let app = new p5(p => {
     bufferC.noStroke()
     bufferC.background(0, 0, 0, 0)
 
+    gradient = p.createGraphics(width, height, p.WEBGL)
+    gradient.background(0)
+    Utils.setGradient(gradient, - width / 2, - height / 2, width, height, gradient.color(25), gradient.color(0), 1)
+
     for (var i = 0; i < 2000; i++) {
       let droplet = new Droplet()
       droplet.y = p.random(- height / 2, height / 2)
@@ -63,6 +68,10 @@ let app = new p5(p => {
     let speed = 2
     p.background(0)
 
+    p.scale(1, -1)
+    p.image(gradient, - width / 2, - height / 2)
+    p.scale(1, -1)
+
     // Moon
     p.fill(255, 255, 255, 150)
     p.ellipse(width / 2 - 200 - totalT / 5, - height / 2 + 200 - totalT / 10, 200, 200, 40)
@@ -81,7 +90,6 @@ let app = new p5(p => {
     })
 
     if ((t+1)*speed > width) {
-      console.log("switch")
       t = 1
       buildings = nextBuildings(buildings)
       bufferA = bufferB
@@ -125,7 +133,6 @@ function nextBuildings(buildings) {
   let stitchBuildings = buildings.filter(b => { return b.x > (width / 2 - overlap) })
   stitchBuildings.forEach(b => { b.x -= width })
   let newBuildings = generateBuildings()
-  debugger
   return [...stitchBuildings, ...newBuildings]
 }
 

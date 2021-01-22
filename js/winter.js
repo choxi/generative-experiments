@@ -49,7 +49,7 @@ let app = new p5(p => {
     gradient.background(0)
     Utils.setGradient(gradient, - width / 2, - height / 2, width, height, gradient.color(25), gradient.color(0), 1)
 
-    for (var i = 0; i < 2000; i++) {
+    for (var i = 0; i < 1000; i++) {
       let droplet = new Droplet()
       droplet.y = p.random(- height / 2, height / 2)
       droplet.x = p.random( - width / 2, width / 2)
@@ -140,7 +140,7 @@ class Droplet {
   constructor() {
     this.x = 0
     this.y = 0
-    this.size = Utils.random(10) / 5
+    this.size = Utils.random(10) / 3
     this.speed = this.size / 5 + app.random(2)
     this.color = app.color(255, 255, 255, app.random(1, 255))
   }

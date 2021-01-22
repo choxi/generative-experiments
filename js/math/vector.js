@@ -33,4 +33,8 @@ export default class Vector {
   unit() {
     return this.multiply(1 / this.magnitude())
   }
+
+  equals(otherVector) {
+    return this.x === otherVector.x && this.y === otherVector.y
+  }
 }

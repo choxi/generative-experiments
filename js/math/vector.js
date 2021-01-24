@@ -1,3 +1,5 @@
+import Victor from "victor"
+
 export default class Vector {
   constructor(x, y) {
     this.x = x
@@ -30,8 +32,20 @@ export default class Vector {
     return Math.sqrt(x*x + y*y)
   }
 
+  rotate(theta) {
+    let v = new Victor(this.x, this.y)
+    v.rotate(theta)
+    return new Vector(v.x, v.y)
+  }
+
   unit() {
-    return this.multiply(1 / this.magnitude())
+    let magnitude = this.magnitude()
+
+    if (magnitude === 0) {
+      return new Vector(0, 0)
+    }
+
+    return this.multiply(1 / magnitude)
   }
 
   equals(otherVector) {

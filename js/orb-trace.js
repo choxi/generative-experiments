@@ -26,7 +26,8 @@ class Orb {
   render(buffer) {
     let { x, y } = this.location
     let { size } = this
-    let color = buffer.color(255, 0, 255)
+    // let color = buffer.color(255, 0, 255)
+    let color = buffer.color(95, 212, 230)
 
     buffer.noStroke()
     buffer.fill(color)
@@ -53,40 +54,72 @@ class Orb {
         this.location = waypoint.location
       }
     }
-
-    // if (newLocation.subtract(waypoint.location).magnitude() < 5 && waypoint.next != null) {
-    //   this.waypoint = waypoint.next
-    //   this.location = waypoint.location
-    // }
   }
 }
 
-let app = new p5(p => {
-  let waypointA = new Waypoint()
-  waypointA.location = new Vector(50, 50)
-  let waypointB = new Waypoint()
-  waypointB.location = new Vector(50, -50)
-  waypointA.addNext(waypointB)
-  let waypointC = new Waypoint()
-  waypointC.location = new Vector(100, -50)
-  waypointB.addNext(waypointC)
+class Chain {
+  constructor(vectors) {
+    this.root = new Waypoint()
+    this.orbs = []
+    this.orbCount = 100
 
-  let orbs = []
+    this.root.location = vectors[0]
+    var current = this.root
+
+    vectors.slice(1).forEach(vector => {
+      let waypoint = new Waypoint()
+      waypoint.location = vector
+      current.addNext(waypoint)
+      current = waypoint
+    })
+
+    let orb = new Orb(this.root)
+    orb.location = this.root.location
+    this.orbs.push(orb)
+  }
+
+  render(buffer) {
+    this.orbs.forEach(orb => {
+      orb.render(buffer)
+      orb.step()
+    })
+
+    if (this.orbs.length < this.orbCount) {
+      let orb = new Orb(this.root)
+      orb.location = this.root.location
+      this.orbs.push(orb)
+    }
+  }
+}
+
+function fromCenter(center, distance, theta) {
+  let point = new Vector(distance, 0).rotate(theta)
+  return center.add(point)
+}
+
+let app = new p5(p => {
   let width = window.innerWidth
   let height = window.innerHeight
+  let blue = p.color(95, 212, 230)
+  let circleCenter =  new Vector(0, height / 4 + 80)
+  let ccFrame = circleCenter.multiply(-1)
+  let circleRadius = 200
+  let offset = circleRadius + 10
+  let length = 100
+
+  let chainA = new Chain([ fromCenter(circleCenter, offset, -Math.PI / 2), fromCenter(circleCenter, offset + length, -Math.PI / 2) ])
+  let chainB = new Chain([ fromCenter(circleCenter, offset, -Math.PI / 4), fromCenter(circleCenter, offset + length, -Math.PI / 4) ])
+  let chainC = new Chain([ fromCenter(circleCenter, offset, -Math.PI / 8), fromCenter(circleCenter, offset + length, -Math.PI / 8) ])
+  let chainD = new Chain([ fromCenter(circleCenter, offset, - 3 * Math.PI / 8), fromCenter(circleCenter, offset + length, -3 * Math.PI / 8) ])
+
+  let chainE = new Chain([ fromCenter(circleCenter, offset, - 5 * Math.PI / 8), fromCenter(circleCenter, offset + length, -5 * Math.PI / 8) ])
+  let chainF = new Chain([ fromCenter(circleCenter, offset, - 6 * Math.PI / 8), fromCenter(circleCenter, offset + length, -6 * Math.PI / 8) ])
+  let chainG = new Chain([ fromCenter(circleCenter, offset, - 7 * Math.PI / 8), fromCenter(circleCenter, offset + length, -7 * Math.PI / 8) ])
+  let chains = [chainA, chainB, chainC, chainD, chainE, chainF, chainG]
 
   p.setup = () => {
     console.log("setup")
-
     p.createCanvas(width, height, p.WEBGL)
-    let startPoint = new Vector(0, 0)
-    let startVector = waypointA.location.subtract(startPoint).unit()
-
-    for(let i = 0; i < 100; i++) {
-      let orb = new Orb(waypointA)
-      orb.location = startVector.multiply(-(i + 1))
-      orbs.push(orb)
-    }
   }
 
   var frame = 0
@@ -96,11 +129,10 @@ let app = new p5(p => {
     // }
 
     p.background(0)
-
-    orbs.forEach(orb => {
-      orb.render(p)
-      orb.step()
-    })
+    p.fill(blue)
+    p.rect(- width / 2, height / 4, width, height / 4)
+    p.ellipse(circleCenter.x, circleCenter.y, circleRadius * 2, circleRadius * 2, 50)
+    chains.forEach(chain => chain.render(p))
 
     frame++
   }

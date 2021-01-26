@@ -11,7 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "js": "^0.1.0",
+    "math": "0.0.3",
     "p5": "=1.1.9",
+    "utils": "^0.3.1",
     "victor": "^1.1.0"
   }
 }

@@ -2,7 +2,6 @@ console.log("starting orb-trace")
 
 import p5 from "p5"
 import Vector from "./math/vector"
-import Utils from "./utils"
 
 class Waypoint {
   constructor() {
@@ -92,6 +91,32 @@ class Chain {
   }
 }
 
+class Grid {
+  constructor() {
+    this.width = 100
+    this.height = 100
+    this.x = 0
+    this.y = 0
+  }
+
+  render(buffer) {
+    let { width, height, x, y } = this
+    let cellWidth = 10
+    let cellHeight = 10
+    let columns = width / cellWidth
+    let rows = height / cellHeight
+
+    for(let r = 0; r < rows; r++) {
+      for(let c = 0; c < columns; c++) {
+        let cX = x + c * cellWidth
+        let cY = y + r * cellHeight
+        buffer.fill(0, 0, 255, Utils.random(255))
+        buffer.rect(cX, cY, cellWidth, cellHeight)
+      }
+    }
+  }
+}
+
 function fromCenter(center, distance, theta) {
   let point = new Vector(distance, 0).rotate(theta)
   return center.add(point)
@@ -120,6 +145,7 @@ let app = new p5(p => {
   p.setup = () => {
     console.log("setup")
     p.createCanvas(width, height, p.WEBGL)
+    p.frameRate(60)
   }
 
   var frame = 0
@@ -128,9 +154,13 @@ let app = new p5(p => {
     //   return
     // }
 
+    let grid = new Grid()
+
     p.background(0)
     p.fill(blue)
     p.rect(- width / 2, height / 4, width, height / 4)
+    // grid.render(p)
+    p.fill(blue)
     p.ellipse(circleCenter.x, circleCenter.y, circleRadius * 2, circleRadius * 2, 50)
     chains.forEach(chain => chain.render(p))
 

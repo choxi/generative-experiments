@@ -1,7 +1,14 @@
+import Vector from "./math/vector"
+
 const Y_AXIS = 1
 const X_AXIS = 2
 
 export default class Utils {
+  static fromCenter(center, distance, theta) {
+    let point = new Vector(distance, 0).rotate(theta)
+    return center.add(point)
+  }
+
   static random(range, endRange=-1) {
     if (endRange == -1) {
       endRange = range

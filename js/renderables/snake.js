@@ -28,6 +28,13 @@ export default class Snake {
     })
 
     if (this.orbs.length < this.orbCount) {
+      // let vector = this.root.next.location.subtract(this.root.location).unit()
+
+      // for(let i=0; i < 5; i++) {
+      //   let orb = new Orb(this.root)
+      //   orb.location = this.root.location.add(vector.multiply(i))
+      //   this.orbs.push(orb)
+      // }
       let orb = new Orb(this.root)
       orb.location = this.root.location
       this.orbs.push(orb)
@@ -51,7 +58,8 @@ class Orb {
     this.location = new Vector(0, 0)
     this.waypoint = waypoint
     // this.size = Utils.random(5,20)
-    this.size = 10
+    // this.size = 10
+    this.size = 5
   }
 
   render(buffer) {
@@ -67,7 +75,7 @@ class Orb {
 
   step() {
     let { location, waypoint }  = this
-    let speed = 1
+    let speed = 10
     let delta = waypoint.location.subtract(location)
 
     if (delta.magnitude() >= speed) {

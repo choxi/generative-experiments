@@ -12,17 +12,30 @@ let app = new p5(p => {
   let planeHeight = height * 1.5
   let circleCenter = new Vector(0, 100)
   let offset = 170
-  let length = 100
+  let length = 1200
   var planeBuffer
 
   // let snakes = [-1/2, -1/4, -1/8, 3/8].map(rotFactor => {
-  let snakes = [-7/8, -3/4, -5/8, -1/2, -3/8, -1/4, -1/8].map(rotFactor => {
-    let rotation = rotFactor * Math.PI
-    return new Snake([
-      Utils.fromCenter(circleCenter, offset, rotation),
-      Utils.fromCenter(circleCenter, offset + length, rotation)
-    ])
-  })
+  let snakes = []
+  let divisions = 50
+  // Radial
+  // for(let i = 0; i < divisions; i++) {
+  //   let rotation = - i * Math.PI / divisions
+  //   let bStagger = Utils.random(100, 400)
+  //   let waypoints = []
+  //   waypoints.push(Utils.fromCenter(circleCenter, offset, rotation))
+  //   waypoints.push(Utils.fromCenter(circleCenter, offset + 1400, rotation))
+  //   // waypoints.push(Utils.fromCenter(circleCenter, offset + bStagger, rotation))
+  //   // waypoints.push(Utils.fromCenter(circleCenter, offset + bStagger, rotation - Math.PI/16))
+  //   // waypoints.push(Utils.fromCenter(circleCenter, offset + 1200, rotation - Math.PI/16))
+  //   snakes.push(new Snake(waypoints))
+  // }
+  let colSize = 50
+  let columns = planeWidth / colSize
+  for(let i = 0; i < columns; i++) {
+    let x = -planeWidth/2 + i * colSize
+    snakes.push(new Snake([new Vector(x, - planeHeight / 2 + i*10), new Vector(x, planeHeight / 2)]))
+  }
 
   p.setup = () => {
     p.createCanvas(width, height, p.WEBGL)

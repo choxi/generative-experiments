@@ -1,9 +1,24 @@
 import Victor from "victor"
 
 export default class Vector {
-  constructor(x, y) {
+  constructor(x, y, z) {
     this.x = x
     this.y = y
+    this.z = z
+
+    if (z === undefined) {
+      this.z = 0
+    }
+  }
+
+  xAngle() {
+    let v = new Victor(this.z, this.y)
+    return v.angle()
+  }
+
+  yAngle() {
+    let v = new Victor(this.z, this.x)
+    return v.angle()
   }
 
   add(otherVector) {
@@ -28,8 +43,8 @@ export default class Vector {
   }
 
   magnitude() {
-    let { x, y } = this
-    return Math.sqrt(x*x + y*y)
+    let { x, y, z } = this
+    return Math.sqrt(x*x + y*y + z*z)
   }
 
   rotate(theta) {

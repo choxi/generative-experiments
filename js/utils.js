@@ -17,7 +17,7 @@ export default class Utils {
 
     let rangeWidth = endRange - range
 
-    return Math.floor(Math.random() * rangeWidth) + range
+    return Math.floor(Math.random() * (rangeWidth + 1)) + range
   }
   static setGradient(p, x, y, w, h, c1, c2, axis) {
     p.noStroke()

@@ -3,15 +3,20 @@ console.log("starting 2001-tunnel")
 import p5 from "p5"
 import Utils from "./utils"
 import Vector from "./math/vector"
+import { v4 as uuid } from "uuid"
 
 class Beam {
   constructor() {
-    this.size = 10
-    this.offset = Utils.random(100)
-    // this.velocity = new Vector(Utils.random(-10, 10), Utils.random(-10, 10), 10)
-    let vY = Utils.random(-4, 4)
-    var vX = Math.sqrt(10 - vY*vY)
+    this.id = uuid()
+    this.size = 5
+    this.length = 500
+    let granularity = 10
+    let vY = Utils.random(-4 * granularity , 4 * granularity) / granularity
+    var vX = Math.sqrt(16 - vY*vY)
     vX = Utils.random(2) < 1 ? -vX : vX
+
+    // let vY = -4
+    // let vX = Math.sqrt(16 - vY * vY)
 
     this.velocity = new Vector(vX, vY, 20)
     this.r = Utils.random(255)
@@ -21,16 +26,19 @@ class Beam {
   }
 
   render(buffer) {
-    let { r, g, b, t } = this
-    let speed = this.velocity.magnitude()
+    let { r, g, b, t, size, length } = this
 
     buffer.push()
     buffer.fill(buffer.color(r, g, b))
     buffer.rotateX(this.velocity.xAngle())
     buffer.rotateY(this.velocity.yAngle())
-    buffer.translate(0, 0, 100 + t * speed)
-    buffer.ellipsoid(10, 10, t * speed, 40, 40)
+    buffer.translate(0, 0, length + this.offset())
+    buffer.ellipsoid(size, size, length, 40, 40)
     buffer.pop()
+  }
+
+  offset() {
+    return this.t * this.velocity.magnitude()
   }
 
   step() {
@@ -51,20 +59,31 @@ let app = new p5(p => {
   }
 
   var t = 0
-  let beams = []
+  let beams = {}
 
   for(let i = 0; i < 1; i++) {
-    beams.push(new Beam())
+    let beam = new Beam()
+    beams[beam.id] = beam
   }
 
   p.draw = () => {
-    beams.forEach(beam => {
+    p.background(0)
+
+    Object.keys(beams).forEach(id => {
+      let beam = beams[id]
       beam.render(p)
       beam.step()
+
+      if (beam.offset() > 1000) {
+        delete beams[beam.id]
+      }
     })
 
-    if (Utils.random(10) < 1) {
-      beams.push(new Beam())
+    if (Utils.random(10) < 9) {
+      for(let i = 0; i < 1; i++) {
+        let beam = new Beam()
+        beams[beam.id] = beam
+      }
     }
 
     // p.push()

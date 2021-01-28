@@ -1,5 +1,6 @@
 console.log("Starting snake-noise")
 
+import p5 from "p5"
 // Auto-reload the page
 // setInterval(() => { location.reload() }, 10000)
 
@@ -9,17 +10,17 @@ class Path {
     this.y = 0
   }
 
-  render() {
+  render(buffer) {
     var squares = []
     let range = 100
 
     for(let i = 0; i < 40; i++) {
-      let x = this.x + random(range) - range / 2
-      let y = this.y + random(range) - range / 2
+      let x = this.x + buffer.random(range) - range / 2
+      let y = this.y + buffer.random(range) - range / 2
       squares.push(new Square(x, y))
     }
 
-    squares.forEach(square => square.render())
+    squares.forEach(square => square.render(buffer))
   }
 }
 
@@ -30,39 +31,35 @@ class Square {
     this.size = 10
   }
 
-  render() {
-    fill(0, 0, 255, 255)
-    rect(this.x, this.y, this.size, this.size)
+  render(buffer) {
+    buffer.fill(0, 0, 255, 255)
+    buffer.rect(this.x, this.y, this.size, this.size)
   }
 }
 
-var width = window.innerWidth
-var height = window.innerHeight
-var squares = []
-var path;
+let app = new p5(p => {
+  var width = window.innerWidth
+  var height = window.innerHeight
+  var squares = []
+  var path
 
-function setup() {
-  width = window.innerWidth
-  height = window.innerHeight
+  p.setup = () => {
+    p.frameRate(5)
+    p.createCanvas(width, height, p.WEBGL)
+    p.noStroke()
 
-  frameRate(5)
-  createCanvas(width, height, WEBGL)
-  noStroke()
+    p.fill(0, 0, 255)
+    p.ellipse(100, 100, 200, 200)
 
-  fill(0, 0, 255)
-  ellipse(100, 100, 200, 200)
+    path = new Path()
+  }
 
-  path = new Path()
-}
+  p.draw = () => {
+    p.background(0)
 
-function draw() {
-  background(0)
+    path.x = path.x + p.random(-10, 10)
+    path.y = path.y + p.random(-10, 10)
 
-  path.x = path.x + random(-10, 10)
-  path.y = path.y + random(-10, 10)
-
-  path.render()
-}
-
-function mouseMoved() {
-}
+    path.render(p)
+  }
+})

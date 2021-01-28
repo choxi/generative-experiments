@@ -69,5 +69,3 @@ export default class Utils {
     return { x: centeredX, y: centeredY }
   }
 }
-
-window.Utils = Utils

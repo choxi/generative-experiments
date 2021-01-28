@@ -4,36 +4,43 @@ import p5 from "p5"
 import Utils from "./utils"
 import Vector from "./math/vector"
 import { v4 as uuid } from "uuid"
+import Color from "./renderables/color"
+
 
 class Beam {
   constructor() {
     this.id = uuid()
-    this.size = 5
-    this.length = 500
+    this.size = 1
+    this.length = 2000
     let granularity = 10
-    let vY = Utils.random(-4 * granularity , 4 * granularity) / granularity
-    var vX = Math.sqrt(16 - vY*vY)
+    let radius = 4
+    let vY = Utils.random(-radius * granularity , radius * granularity) / granularity
+    var vX = Math.sqrt(radius*radius - vY*vY)
     vX = Utils.random(2) < 1 ? -vX : vX
 
     // let vY = -4
     // let vX = Math.sqrt(16 - vY * vY)
 
+    let { blue, white } = Color.palettes.tron
     this.velocity = new Vector(vX, vY, 20)
-    this.r = Utils.random(255)
-    this.g = Utils.random(255)
-    this.b = Utils.random(255)
+    this.color = Color.lerp(blue.alpha(0.5), Color.palettes.tron.white, Utils.random(10) / 10)
     this.t = 0
   }
 
   render(buffer) {
-    let { r, g, b, t, size, length } = this
+    let { color, t, size, length } = this
+    let off = this.offset()
 
     buffer.push()
-    buffer.fill(buffer.color(r, g, b))
+    buffer.fill(color.toP5(buffer))
     buffer.rotateX(this.velocity.xAngle())
     buffer.rotateY(this.velocity.yAngle())
-    buffer.translate(0, 0, length + this.offset())
-    buffer.ellipsoid(size, size, length, 40, 40)
+    buffer.translate(0, 0, off)
+    if (off < length ) {
+      buffer.ellipsoid(size, size, off, 40, 40)
+    } else {
+      buffer.ellipsoid(size, size, length, 40, 40)
+    }
     buffer.pop()
   }
 
@@ -74,43 +81,17 @@ let app = new p5(p => {
       beam.render(p)
       beam.step()
 
-      if (beam.offset() > 1000) {
+      if (beam.offset() > 4000) {
         delete beams[beam.id]
       }
     })
 
-    if (Utils.random(10) < 9) {
+    if (Utils.random(10) < 1) {
       for(let i = 0; i < 1; i++) {
         let beam = new Beam()
         beams[beam.id] = beam
       }
     }
-
-    // p.push()
-    // p.fill(p.color(255, 255, 0))
-    // p.translate(0, t / 10 * speed, -200 + t * speed)
-    // p.sphere(10)
-    // p.pop()
-
-    // p.push()
-    // p.fill(p.color(0, 255, 255))
-    // p.translate(0, -t / 10 * speed, -500 + t * speed)
-    // p.sphere(10)
-    // p.pop()
-
-    // p.push()
-    // p.fill(p.color(255, 0, 255))
-    // p.translate(-t / 10 * speed, -t / 10 * speed, -100 + t * speed)
-    // p.sphere(10)
-    // p.pop()
-
-    // for(let i = 0; i < 10; i++) {
-    //   p.push()
-    //   p.fill(p.color(255, 0, Utils.random(200, 255)))
-    //   p.translate(-t / Utils.random(10, 50) * speed, -t / Utils.random(10, 50) * speed, -100 + t * speed)
-    //   p.sphere(10)
-    //   p.pop()
-    // }
 
     t++
   }

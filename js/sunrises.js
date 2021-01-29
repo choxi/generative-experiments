@@ -1,97 +1,89 @@
 console.log("Starting sunrises")
 
-// Auto-reload the page
-// setInterval(() => { location.reload() }, 10000)
+import p5 from "p5"
+import Utils from "./utils"
+import Color from "./renderables/color"
 
-var width
-var height
-var bubbles = {}
-var bubbleSources = []
-var clouds = []
-var time = 0
+new p5(p => {
+  var width = window.innerWidth
+  var height = window.innerHeight
+  var bubbles = {}
+  var bubbleSources = []
+  var clouds = []
+  var time = 0
 
-function setup() {
-  width = window.innerWidth
-  height = window.innerHeight
+  p.setup = () => {
+    p.frameRate(30)
+    p.createCanvas(width, height, p.WEBGL)
 
-  frameRate(30)
-  createCanvas(width, height, WEBGL)
+    p.background(0)
+    p.noStroke()
 
-  background(0)
-  noStroke()
-  for(let i = 0; i < 10; i++) {
-    clouds.push(new Cloud())
-  }
-}
-
-function draw() {
-  let sunWidth = 200
-  let sunHeight = 200
-  // let colorB = color(230, 126, 34)
-  // let colorA = color(241, 196, 15)
-  let colorB = color(52, 152, 219)
-  let colorA = color(31, 118, 175)
-  let rows = 10
-  let columns = 10
-
-  for(let j = 0; j < rows; j++) {
-    for(let i = 0; i < columns; i++) {
-      var x, y
-
-      if (j % 2 == 0) {
-        x = i * sunWidth - width / 2
-        y = j * sunHeight / 2.5 - height / 2
-      } else {
-        x = i * sunWidth - width / 2 - sunWidth / 2
-        y = j * sunHeight / 2.5 - height / 2
-      }
-
-      // let color = lerpColor(colorA, colorB, ((j + time / 10) % rows)/rows)
-      let color = lerpColor(colorA, colorB, j / rows)
-      fill(color)
-      ellipse(x, y, sunWidth, sunHeight, 50)
+    for(let i = 0; i < 10; i++) {
+      let cloud = new Cloud()
+      cloud.x = Utils.random(-width / 2, width / 2)
+      cloud.y = Utils.random(-height / 2, height / 2)
+      clouds.push(cloud)
     }
   }
 
-  clouds.forEach(cloud => {
-    cloud.render()
-    cloud.step()
-  })
+  p.draw = () => {
+    let sunWidth = 200
+    let sunHeight = 200
+    // let colorB = color(230, 126, 34)
+    // let colorA = color(241, 196, 15)
+    let colorB = new Color(52, 152, 219)
+    let colorA = new Color(31, 118, 175)
+    let rows = 10
+    let columns = 10
 
-  time += 1
-}
+    for(let j = 0; j < rows; j++) {
+      for(let i = 0; i < columns; i++) {
+        var x, y
+
+        if (j % 2 == 0) {
+          x = i * sunWidth - width / 2
+          y = j * sunHeight / 2.5 - height / 2
+        } else {
+          x = i * sunWidth - width / 2 - sunWidth / 2
+          y = j * sunHeight / 2.5 - height / 2
+        }
+
+        // let color = lerpColor(colorA, colorB, ((j + time / 10) % rows)/rows)
+        let color = Color.lerp(colorA, colorB, j / rows)
+        // let color = p.lerpColor(colorA, colorB, j / rows)
+        p.fill(color.toP5(p))
+        p.ellipse(x, y, sunWidth, sunHeight, 50)
+      }
+    }
+
+    clouds.forEach(cloud => {
+      cloud.render(p)
+      cloud.step()
+    })
+
+    time += 1
+  }
+})
 
 class Cloud {
   constructor() {
-    this.x = random(-width / 2, width / 2)
-    this.y = random(-height / 2, height / 2)
-    this.speed = random(10) / 10
+    this.x = 0
+    this.y = 0
+    this.speed = Utils.random(10) / 10
   }
 
-  render() {
+  render(p) {
     let width = 100
     let { x, y } = this
 
-    fill(255, 255, 255, 255 / 2)
-    ellipse(x - 30, y, 35)
-    ellipse(x, y, 50)
-    ellipse(x + 25, y, 30)
+    p.fill(255, 255, 255, 255 / 2)
+    p.ellipse(x - 30, y, 35)
+    p.ellipse(x, y, 50)
+    p.ellipse(x + 25, y, 30)
   }
 
   step() {
     this.x += this.speed
-  }
-}
-
-class Bubble {
-  constructor() {
-    this.id = uuidv4()
-    this.x = random(width) -  width / 2
-    this.y = random(height) - height / 2
-    this.originX = this.x
-    this.originY = this.y
-    this.speed = random(10) + 1
-    this.size = random(10) + 50
-    this.color = color(random(255), random(255), random(255), 100)
   }
 }

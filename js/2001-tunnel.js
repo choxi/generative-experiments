@@ -14,7 +14,7 @@ class Beam {
     this.length = 2000
     let granularity = 10
     let radius = 4
-    let vY = Utils.random(-radius * granularity , radius * granularity) / granularity
+    let vY = Utils.random(-radius * granularity , radius * granularity + 1) / granularity
     var vX = Math.sqrt(radius*radius - vY*vY)
     vX = Utils.random(2) < 1 ? -vX : vX
 

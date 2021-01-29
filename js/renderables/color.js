@@ -24,11 +24,44 @@ class Color {
   }
 }
 
+// From: https://flatuicolors.com/palette/defo
+// Script:
+//     let colors = {}
+//     document.querySelectorAll(".color").forEach(c => {
+//       colors[c.querySelectorAll("span")[0].innerText.toLowerCase()] = c.style.backgroundColor
+//     })
+//     colors
+
 Color.palettes = {
   tron: {
     blue: new Color(95, 212, 230),
     white: new Color(239, 233, 234)
+  },
+
+  flat: {
+    alizarin: new Color(231, 76, 60),
+    amethyst: new Color(155, 89, 182),
+    asbestos: new Color(127, 140, 141),
+    belizeHole: new Color(41, 128, 185),
+    carrot: new Color(230, 126, 34),
+    clouds: new Color(236, 240, 241),
+    concrete: new Color(149, 165, 166),
+    emerald: new Color(46, 204, 113),
+    greenSea: new Color(22, 160, 133),
+    midnightBlue: new Color(44, 62, 80),
+    nephritis: new Color(39, 174, 96),
+    orange: new Color(243, 156, 18),
+    peterRiver: new Color(52, 152, 219),
+    pomegranate: new Color(192, 57, 43),
+    pumpkin: new Color(211, 84, 0),
+    silver: new Color(189, 195, 199),
+    sunFlower: new Color(241, 196, 15),
+    turquoise: new Color(26, 188, 156),
+    wetAsphalt: new Color(52, 73, 94),
+    wisteria: new Color(142, 68, 173)
   }
 }
+
+
 
 export default Color

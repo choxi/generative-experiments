@@ -4,6 +4,34 @@ import p5 from "p5"
 import Snake from "./renderables/snake"
 import Vector from "./math/vector"
 import Utils from "./utils"
+import Color from "./renderables/color"
+import { v4 as uuid } from "uuid"
+
+class Pulse {
+  constructor() {
+    this.id = uuid()
+    this.radius = 0
+    this.speed = 5
+    this.size = Utils.random(2, 2)
+    this.color = Utils.randomColor()
+  }
+
+  render(p) {
+    let { radius, size, color } = this
+
+    p.push()
+    // p.strokeWeight(size)
+    // p.stroke(color.toP5(p))
+    // p.noFill()
+    p.fill(color.toP5(p))
+    p.torus(radius, size, 60, 2)
+    p.pop()
+  }
+
+  step() {
+    this.radius += this.speed
+  }
+}
 
 let app = new p5(p => {
   let width = window.innerWidth
@@ -15,10 +43,10 @@ let app = new p5(p => {
   let length = 1200
   var planeBuffer
 
-  // let snakes = [-1/2, -1/4, -1/8, 3/8].map(rotFactor => {
   let snakes = []
-  let divisions = 50
+  let pulses = {}
   // Radial
+  // let divisions = 50
   // for(let i = 0; i < divisions; i++) {
   //   let rotation = - i * Math.PI / divisions
   //   let bStagger = Utils.random(100, 400)
@@ -30,12 +58,14 @@ let app = new p5(p => {
   //   // waypoints.push(Utils.fromCenter(circleCenter, offset + 1200, rotation - Math.PI/16))
   //   snakes.push(new Snake(waypoints))
   // }
-  let colSize = 50
-  let columns = planeWidth / colSize
-  for(let i = 0; i < columns; i++) {
-    let x = -planeWidth/2 + i * colSize
-    snakes.push(new Snake([new Vector(x, - planeHeight / 2 + i*10), new Vector(x, planeHeight / 2)]))
-  }
+
+  // Rainfaill
+  // let colSize = 50
+  // let columns = planeWidth / colSize
+  // for(let i = 0; i < columns; i++) {
+  //   let x = -planeWidth/2 + i * colSize
+  //   snakes.push(new Snake([new Vector(x, - planeHeight / 2 + i*10), new Vector(x, planeHeight / 2)]))
+  // }
 
   p.setup = () => {
     p.createCanvas(width, height, p.WEBGL)
@@ -59,8 +89,39 @@ let app = new p5(p => {
     snakes.forEach(s => s.render(p))
     p.pop()
 
+    p.push()
+    p.translate(0, 100, - planeHeight / 2 - 10)
+    Object.keys(pulses).forEach(id => {
+      let pulse = pulses[id]
+      pulse.render(p)
+      pulse.step()
+
+      if (pulse.radius > 2000) {
+        delete pulses[id]
+      }
+    })
+    p.pop()
+
+    p.push()
+    p.translate(0, 0, 10)
     p.image(planeBuffer, - width / 2, - height / 2)
-    // renderPlane(p, planeWidth, planeHeight)
+    p.pop()
+
+    p.push()
+    let tilt = -Math.PI / 8 + 0.2
+    p.rotateX(tilt)
+    p.translate(10, 10, 200)
+    p.stroke(0)
+    p.fill(255, 0, 0)
+    p.box(20, 100, 20)
+    p.pop()
+
+
+    // if (Utils.random(10) < 1) {
+    //   let pulse = new Pulse()
+    //   pulse.color = Utils.randomColor(Color.palettes.tron)
+    //   pulses[pulse.id] = pulse
+    // }
   }
 })
 

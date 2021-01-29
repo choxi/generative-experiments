@@ -1,4 +1,5 @@
 import Vector from "./math/vector"
+import Color from "./renderables/color"
 
 const Y_AXIS = 1
 const X_AXIS = 2
@@ -9,16 +10,31 @@ export default class Utils {
     return center.add(point)
   }
 
-  static random(range, endRange=-1) {
-    if (endRange == -1) {
+  // This implementation is intended to match p5.random()
+  //
+  //   `random(a)`    returns an integer value from 0 and up to a
+  //   `random(a, b)` returns an integer value from a and up to b
+  //
+  static random(range, endRange) {
+    if (endRange == undefined) {
       endRange = range
       range = 0
     }
 
     let rangeWidth = endRange - range
 
-    return Math.floor(Math.random() * (rangeWidth + 1)) + range
+    return Math.floor(Math.random() * rangeWidth) + range
   }
+
+  static randomColor(palette=Color.palettes.flat) {
+    let names = Object.keys(palette)
+    let index = Utils.random(names.length)
+    let name = names[index]
+    if (name == undefined) { debugger }
+    let color = palette[name]
+    return color
+  }
+
   static setGradient(p, x, y, w, h, c1, c2, axis) {
     p.noStroke()
     if (axis === Y_AXIS) {

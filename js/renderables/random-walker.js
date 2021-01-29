@@ -2,12 +2,12 @@ import Utils from "../utils"
 import Color from "./color"
 
 export default class RandomWalker {
-  constructor(x=0, y=0) {
+  constructor(x=0, y=0, options={}) {
     this.x = x
     this.y = y
     this.lastX = x
     this.lastY = y
-    this.range = 10
+    this.range = options.range || 10
     this.color = Utils.randomColor()
   }
 

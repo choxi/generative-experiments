@@ -1,4 +1,4 @@
-console.log("starting 2001-tunnel")
+console.log("starting tron")
 
 import p5 from "p5"
 import Snake from "./renderables/snake"

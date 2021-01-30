@@ -1,5 +1,6 @@
 import p5 from "p5"
 import Building from "./renderables/building"
+import Utils from "./utils"
 
 var droplets = []
 var width = window.innerWidth

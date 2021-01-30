@@ -1,19 +1,5 @@
-console.log("winter")
-
 import p5 from "p5"
 import Building from "./renderables/building"
-
-// TODO
-//
-// - [ ] More building types (sears tower, colored lights on top)
-//   * [x] Add roofs
-//   * [ ] Add staggers
-// - [ ] Animate lights changing (need a way to update background layers)
-// - [x] Add moon
-// - [ ] Add moving clouds
-// - [ ] Add background lighting, texture, gradient
-// - [x] Horizontal scrolling?
-// - [x] Space windows correctly
 
 var droplets = []
 var width = window.innerWidth
@@ -33,6 +19,10 @@ let app = new p5(p => {
     p.createCanvas(width, height, p.WEBGL)
     p.noStroke()
 
+    // We render the buildings offscreen for performance.
+    // To create the infinite scrolling effect, we create
+    // 3 buffers to track the current two frames and render
+    // the next one before we scroll to it.
     bufferA = p.createGraphics(width, height, p.WEBGL)
     bufferA.noStroke()
     bufferA.background(0, 0, 0, 0)
@@ -76,6 +66,7 @@ let app = new p5(p => {
     p.fill(255, 255, 255, 150)
     p.ellipse(width / 2 - 200 - totalT / 5, - height / 2 + 200 - totalT / 10, 200, 200, 40)
 
+    // Current and next buildings screen
     p.image(bufferA, -width / 2 - t * speed, - height / 2)
     p.image(bufferB, -width / 2 - t * speed + width, - height / 2)
 
@@ -104,6 +95,8 @@ let app = new p5(p => {
   }
 })
 
+// Generates and returns a new set of buildings across
+// the full width of the screen.
 function generateBuildings() {
   let all = []
 
@@ -128,6 +121,9 @@ function generateBuildings() {
   return all
 }
 
+// Takes a collection of buildings and generates the set of buildings for the next
+// screen while we're scrolling horizontally. This function adds buildings from the previous
+// screen to the next screen so that buildings overlapping boths screens appear in both.
 function nextBuildings(buildings) {
   let overlap = 100
   let stitchBuildings = buildings.filter(b => { return b.x > (width / 2 - overlap) })

@@ -5,6 +5,17 @@ const Y_AXIS = 1
 const X_AXIS = 2
 
 export default class Utils {
+  static debugBezier(p, a1, c1, c2, a2) {
+    p.push()
+    p.noFill()
+    p.stroke(255, 102, 0)
+    p.line(a1.x, a1.y, c1.x, c1.y)
+    p.line(c2.x, c2.y, a2.x, a2.y)
+    p.stroke(0, 0, 0)
+    p.bezier(a1.x, a1.y, c1.x, c1.y, c2.x, c2.y, a2.x, a2.y)
+    p.pop()
+  }
+
   static fromCenter(center, distance, theta) {
     let point = new Vector(distance, 0).rotate(theta)
     return center.add(point)

@@ -34,11 +34,24 @@ function init() {
 
 	scene = new THREE.Scene();
 
+  // geometry = new THREE.BoxGeometry( 0.01, 0.01, 0.01 );
   geometry = new THREE.TorusGeometry( 0.01, 0.005, 32 , 100)
   planeGeo = new THREE.PlaneGeometry(cellWidth, cellHeight)
-  material = new THREE.MeshNormalMaterial({ transparent: true, opacity: 0.5 })
+  material = new THREE.MeshNormalMaterial()
   blueMaterial = new THREE.MeshBasicMaterial({ color: "#334EEE" })
   whiteMaterial = new THREE.MeshBasicMaterial({ color: "#FFFFFF" })
+
+  // let rows = 100
+  // let columns = 100
+  // for(let r=0; r < rows; r++) {
+  //   for(let c=0; c < columns; c++) {
+  //     mesh = new THREE.Mesh( geometry, material );
+  //     mesh.translateX(-1 + (c / rows)*2)
+  //     mesh.translateY(-1 + (r / columns)*2)
+  //     scene.add( mesh );
+  //     meshes.push(mesh)
+  //   }
+  // }
   mesh = new THREE.Mesh(geometry, material)
 
   for(let r = 0; r < rows; r++) {
@@ -54,13 +67,21 @@ function init() {
       planeMesh.rotateOnWorldAxis(new THREE.Vector3(1, 0, 0), -3 * Math.PI / 8)
       planeMesh.translateX(x)
       planeMesh.translateY(y)
+      // planeMesh.position.y = y
+      // planeMesh.rotation.x = -3 * Math.PI / 8
+      // planeMesh.position.x = x
+      // planeMesh.position.y = y
+      // planeMesh.rotation.x = -3 * Math.PI / 8
+      // planeMesh.position.y = -0.75
       scene.add(planeMesh)
       tiles.push(planeMesh)
     }
   }
-
+  // mesh.translateX(-1 + (c / rows)*2)
+  // mesh.translateY(-1 + (r / columns)*2)
   scene.add( mesh )
   meshes.push(mesh)
+
 	renderer = new THREE.WebGLRenderer( { antialias: true } );
 	renderer.setSize( window.innerWidth, window.innerHeight );
   renderer.setAnimationLoop( animation );
@@ -83,15 +104,14 @@ function animation( time ) {
   })
 
   if (frame % 10 === 0) {
+    console.log("here")
     tiles.forEach(tile => {
       if (tile.material.color.getHexString() === "ffffff") {
         tile.material.color.set(0x334eee)
         tile.material.needsUpdate = true
-        tile.needsUpdate = true
       } else {
         tile.material.color.set(0xffffff)
         tile.material.needsUpdate = true
-        tile.needsUpdate = true
       }
 
       // if (tile.material === whiteMaterial) {

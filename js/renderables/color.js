@@ -1,3 +1,5 @@
+import Utils from "../utils"
+
 class Color {
   constructor(r, g, b, a=255) {
     this.r = r
@@ -12,6 +14,14 @@ class Color {
 
   alpha(newAlpha) {
     return new Color(this.r, this.g, this.b, newAlpha)
+  }
+
+  static random(palette=Color.palettes.flat) {
+    let keys = Object.keys(palette)
+    let keyIndex = Utils.random(0, keys.length)
+    let key = keys[keyIndex]
+
+    return palette[key]
   }
 
   static lerp(colorA, colorB, weight) {

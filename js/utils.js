@@ -21,6 +21,18 @@ export default class Utils {
     return center.add(point)
   }
 
+  static clamp(number, min, max) {
+    if (number < min) {
+      return min
+    }
+
+    if (number > max) {
+      return max
+    }
+
+    return number
+  }
+
   // This implementation is intended to match p5.random()
   //
   //   `random(a)`    returns an integer value from 0 and up to a

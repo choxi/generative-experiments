@@ -48,6 +48,19 @@ Color.palettes = {
     white: new Color(239, 233, 234)
   },
 
+  gray: {
+    a: new Color(0, 0, 0),
+    b: new Color(20, 20, 20),
+    c: new Color(40, 40, 40),
+    d: new Color(60, 60, 60),
+    e: new Color(80, 80, 80),
+    f: new Color(100, 100, 100),
+    g: new Color(120, 120, 120),
+    h: new Color(140, 140, 140),
+    i: new Color(160, 160, 160),
+    j: new Color(180, 180, 180)
+  },
+
   flat: {
     alizarin: new Color(231, 76, 60),
     amethyst: new Color(155, 89, 182),

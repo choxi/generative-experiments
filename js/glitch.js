@@ -5,7 +5,7 @@ import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
 import { GlitchPass } from 'three/examples/jsm/postprocessing/GlitchPass.js'
 import { BokehPass } from 'three/examples/jsm/postprocessing/BokehPass.js'
 
-import modelURL from "url:../models/old-spoon/source/spoon.obj"
+import modelURL from "url:../models/oumuamua/interstellarRock-Martin.obj"
 
 let camera, scene, renderer
 let spoon, composer
@@ -21,7 +21,7 @@ function init() {
   const far = 100
 
   camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-  camera.position.set(0, 00, 20)
+  camera.position.set(0, 0, 100)
 	scene = new THREE.Scene()
 
   const skyColor = 0xB1E1FF  // light blue
@@ -36,6 +36,9 @@ function init() {
                 spoon = object
                 console.log("loaded")
                 spoon.rotation.x = Math.PI / 2
+                spoon.scale.x = 0.1
+                spoon.scale.y = 0.1
+                spoon.scale.z = 0.1
                 scene.add(spoon)
               },
               xhr => {
@@ -55,8 +58,8 @@ function init() {
   const renderPass = new RenderPass( scene, camera )
   composer.addPass(renderPass)
 
-  const glitchPass = new GlitchPass()
-  composer.addPass(glitchPass)
+  // const glitchPass = new GlitchPass()
+  // composer.addPass(glitchPass)
 
   // const bokehPass = new BokehPass( scene, camera, {} )
   // composer.addPass(bokehPass)

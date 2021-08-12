@@ -4,6 +4,7 @@ import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
 import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
+import { RenderPass as PostRenderPass, EffectPass as PostEffectPass, GodRaysEffect } from "postprocessing"
 
 const BLOOM_PARAMS = {
   exposure: 1,
@@ -13,24 +14,58 @@ const BLOOM_PARAMS = {
 }
 
 const loader = new GLTFLoader()
-import modelURL from "url:../models/double-slit.glb"
+import sceneURL from "url:../models/quantum-eraser.glb"
 import photonURL from "url:../models/photon-wave.glb"
-let photon
 
 class Sketch {
-  constructor() {
+  constructor(width, height) {
+    loader.load(sceneURL,
+                (sceneSrc) => {
+                  loader.load(photonURL,
+                              (photonSrc) => {
+                                photonSrc.scene.scale.multiplyScalar(0.1)
+                                this.render(sceneSrc.scene, photonSrc.scene.getObjectByName("Torus002"))
+                              },
+                              xhr => console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' ),
+                              error => console.log(error))
+                },
+                xhr => console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' ),
+                error => console.log(error))
+
+  }
+
+  render(sceneModel, photon) {
+    //   gltf.scene.traverse(geo => {
+    //     geo.material = new THREE.MeshLambertMaterial({ color: "#0000FF" })
+    //   })
+
+    //   gltf.scene.scale.multiplyScalar(0.5)
+    const emitter = sceneModel.getObjectByName("Slits")
+    this.emitters = [ new Emitter(-10, 0, 10, photon) ]
+    this.emitters[0].source.mesh.position.x = emitter.position.x
+    this.emitters[0].source.mesh.position.y = emitter.position.y
+    this.emitters[0].source.mesh.position.z = emitter.position.z
+    this.sceneModel = sceneModel
+    this.screen = sceneModel.getObjectByName("Screen")
+    this.cone = sceneModel.getObjectByName("Cone")
+
     const fov = 45
     const aspect = 2
     const near = 0.1
     const far = 100
 
     this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far)
-    this.camera.position.set(0, 0, 5)
+    this.camera.position.set(25, 25, 25)
     this.camera.lookAt(0, 0, 0)
+    // this.camera = new THREE.OrthographicCamera(width / - 2, width / 2, height / 2, height / - 2, -100, 1000 )
+    // this.camera.position.set(1, 1, 1)
+    // this.camera.zoom = 50
+    // this.camera.updateProjectionMatrix()
+    // this.camera.lookAt(0, 0, 0)
+
     this.scene = new THREE.Scene()
-    this.renderer = new THREE.WebGLRenderer({ antialias: true })
+    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
     this.renderer.setSize(window.innerWidth, window.innerHeight)
-    this.renderer.setAnimationLoop((time) => this.loop(time))
     document.body.appendChild(this.renderer.domElement)
 
     // this.emitter = new Box(0.1, 0.1, 0.1)
@@ -45,8 +80,9 @@ class Sketch {
     // const intensity = 1
     // const light = new THREE.HemisphereLight(skyColor, groundColor, intensity)
     // const light = new THREE.AmbientLight( 0xFFFFFF )
-    const light = new THREE.DirectionalLight(0xffffff, 1)
-    light.position.set(-100, 50, 100)
+    const light = new THREE.DirectionalLight(0xffffff, 2)
+    light.position.set(100, 50, 100)
+    // light.position.set(0, 100, 0)
     // light.lookAt(0, 0, 0)
     // const light = new THREE.SpotLight(0xffffff)
     // light.position.set(100, 1000, 100)
@@ -58,6 +94,20 @@ class Sketch {
     // this.scene.add(light2)
     this.scene.add(light)
 
+    this.scene.add(this.sceneModel)
+
+    // let godraysEffect = new GodRaysEffect(this.camera, this.cone, {
+    //   resolutionScale: 1,
+    //   density: 0.8,
+    //   decay: 0.95,
+    //   weight: 0.9,
+    //   samples: 100
+    // })
+
+    // let postRenderPass = new PostRenderPass(this.scene, this.camera)
+    // let postEffectPass = new PostEffectPass(this.camera, godraysEffect)
+    // postEffectPass.renderToScreen = true
+
     const renderPass = new RenderPass(this.scene, this.camera)
 
     const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 )
@@ -67,62 +117,23 @@ class Sketch {
 
     this.composer = new EffectComposer(this.renderer)
     this.composer.addPass(renderPass)
+    // this.composer.addPass(postRenderPass)
+    // this.composer.addPass(postEffectPass)
     // this.composer.addPass(bloomPass)
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
     this.frame = 0
 
     // Setup Objects
-    this.emitters = [ new Emitter(-1, 0, -1), new Emitter(-1, 0, 0) ]
     this.emitters.forEach(e => this.scene.add(e.group))
-    this.screen = new Box(0.1, 1, 2, "#FFFFFF")
-    this.screen.mesh.position.x = 2
-    this.scene.add(this.screen.mesh)
+    // this.screen = new Box(0.1, 1, 2, "#FFFFFF")
+    // this.screen.mesh.position.x = 2
+    // this.scene.add(this.screen.mesh)
 
-    this.floor = new Box(4, 0.1, 4, "#FFFFFF")
-    this.floor.mesh.position.y = -0.5
-    this.scene.add(this.floor.mesh)
-    
-    loader.load(modelURL, 
-                (gltf) => {
-                  gltf.scene.traverse(geo => { 
-                    geo.material = new THREE.MeshLambertMaterial({ color: "#0000FF" })
-                  })
-
-                  gltf.scene.scale.multiplyScalar(0.5)
-                  this.scene.add( gltf.scene )
-
-                  gltf.animations; // Array<THREE.AnimationClip>
-                  gltf.scene; // THREE.Group
-                  gltf.scenes; // Array<THREE.Group>
-                  gltf.cameras; // Array<THREE.Camera>
-                  gltf.asset; // Object
-                },
-                // called while loading is progressing
-                function ( xhr ) {
-                  console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-                },
-                // called when loading has errors
-                function (error) {
-                  console.log(error)
-                  console.log( 'An error happened' );
-                })
-
-    loader.load(photonURL, 
-                (gltf) => {
-                  gltf.scene.scale.multiplyScalar(0.1)
-                  photon = gltf.scene.getObjectByName("Torus002")
-                  // this.scene.add(this.photon)
-                },
-                // called while loading is progressing
-                function ( xhr ) {
-                  console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-                },
-                // called when loading has errors
-                function (error) {
-                  console.log(error)
-                  console.log( 'An error happened' );
-                })
+    // this.floor = new Box(4, 0.1, 4, "#FFFFFF")
+    // this.floor.mesh.position.y = -0.5
+    // this.scene.add(this.floor.mesh)
+    this.renderer.setAnimationLoop((time) => this.loop(time))
   }
 
   loop() {
@@ -156,20 +167,21 @@ class Object {
 }
 
 class Emitter {
-  constructor(x=0, y=0, z=0) {
+  constructor(x=0, y=0, z=0, photon) {
     this.group = new THREE.Group()
     this.source = new Box(0.1, 0.1, 0.1)
     this.source.mesh.position.x = x
     this.source.mesh.position.y = y
     this.source.mesh.position.z = z
     this.group.add(this.source.mesh)
+    this.photon = photon
     this.photons = []
   }
 
   render(time) {
-    if (time % 40 === 0 && photon) {
+    if (time % 50 === 0) {
       // const p = new Sphere(0.05, "#f1c40f")
-      const p = photon.clone()
+      const p = this.photon.clone()
       // p.material = p.material.clone()
       p.material = new THREE.MeshStandardMaterial({ color: "#FFFFFF" })
       p.material.renderOrder = 1
@@ -177,20 +189,24 @@ class Emitter {
       p.position.y = this.source.mesh.position.y
       p.position.z = this.source.mesh.position.z
       p.scale.multiplyScalar(0.05)
-      p.rotateZ(Math.PI / 2)
+      p.rotateX(Math.PI / 2)
       this.photons.push(p)
       this.group.add(p)
     }
 
-    if (this.photons.length > 10) {
+    if (this.photons.length > 100) {
       this.photons.shift()
     }
 
     this.photons.forEach(photon => {
-      photon.position.x += 0.01
-      photon.scale.multiplyScalar(1.005)
-      photon.material.opacity *= 0.99
-      photon.material.transparent = true
+      // if (this.screen && photon.position.z > screen.position.z) {
+      //   photon.position.z -= 0.01
+      //   photon.scale.multiplyScalar(1.002)
+      //   photon.material.opacity *= 0.999
+      //   photon.material.transparent = true
+      // } else {
+      //     scene.remove(photon)
+      // }
     })
   }
 }
@@ -214,5 +230,5 @@ class Sphere extends Object {
 }
 
 document.addEventListener("DOMContentLoaded", event => {
-  const sketch = new Sketch()
+  const sketch = new Sketch(window.innerWidth, window.innerHeight)
 })

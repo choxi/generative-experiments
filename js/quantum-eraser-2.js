@@ -1,10 +1,11 @@
 import * as THREE from 'three'
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
+// import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer.js'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass.js'
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
-import { RenderPass as PostRenderPass, EffectPass as PostEffectPass, GodRaysEffect } from "postprocessing"
+// import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass.js'
+// https://redstapler.co/godrays-three-js-post-processing-tutorial/
+import { RenderPass, EffectPass, GodRaysEffect, EffectComposer } from "postprocessing"
 
 const BLOOM_PARAMS = {
   exposure: 1,
@@ -64,9 +65,10 @@ class Sketch {
     // this.camera.lookAt(0, 0, 0)
 
     this.scene = new THREE.Scene()
-    this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true })
+    this.renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true })
     this.renderer.setSize(window.innerWidth, window.innerHeight)
     document.body.appendChild(this.renderer.domElement)
+    this.glow = new Box(2, 2, 2)
 
     // this.emitter = new Box(0.1, 0.1, 0.1)
     // this.photons = []
@@ -93,32 +95,32 @@ class Sketch {
     // light2.position.set(50, -100, -10)
     // this.scene.add(light2)
     this.scene.add(light)
-
     this.scene.add(this.sceneModel)
+    this.scene.add(this.glow.mesh)
 
-    // let godraysEffect = new GodRaysEffect(this.camera, this.cone, {
-    //   resolutionScale: 1,
-    //   density: 0.8,
-    //   decay: 0.95,
-    //   weight: 0.9,
-    //   samples: 100
-    // })
+    let godraysEffect = new GodRaysEffect(this.camera, this.glow.mesh, {
+      resolutionScale: 1,
+      density: 1.8,
+      decay: 0.95,
+      weight: 0.9,
+      samples: 100,
+    })
 
-    // let postRenderPass = new PostRenderPass(this.scene, this.camera)
-    // let postEffectPass = new PostEffectPass(this.camera, godraysEffect)
-    // postEffectPass.renderToScreen = true
+    let postRenderPass = new RenderPass(this.scene, this.camera)
+    let postEffectPass = new EffectPass(this.camera, godraysEffect)
+    postEffectPass.renderToScreen = true
 
-    const renderPass = new RenderPass(this.scene, this.camera)
+    // const renderPass = new RenderPass(this.scene, this.camera)
 
     const bloomPass = new UnrealBloomPass( new THREE.Vector2( window.innerWidth, window.innerHeight ), 1.5, 0.4, 0.85 )
     bloomPass.threshold = BLOOM_PARAMS.bloomThreshold
     bloomPass.strength = BLOOM_PARAMS.bloomStrength
     bloomPass.radius = BLOOM_PARAMS.bloomRadius
 
-    this.composer = new EffectComposer(this.renderer)
-    this.composer.addPass(renderPass)
+    this.composer = new EffectComposer(this.renderer, { multisampling: 0 })
+    this.composer.addPass(postRenderPass)
     // this.composer.addPass(postRenderPass)
-    // this.composer.addPass(postEffectPass)
+    this.composer.addPass(postEffectPass)
     // this.composer.addPass(bloomPass)
 
     this.controls = new OrbitControls(this.camera, this.renderer.domElement)
@@ -214,8 +216,16 @@ class Emitter {
 class Box extends Object {
   constructor(width, height, depth, color="#FFFFFF") {
     super()
-    this.geometry = new THREE.BoxGeometry(width, height, depth)
-    this.material = new THREE.MeshStandardMaterial({ color: color, wireframe: false })
+    this.geometry = new THREE.SphereGeometry(width)
+    // this.geometry = new THREE.BoxGeometry(width, height, depth)
+    // this.material = new THREE.MeshStandardMaterial({ color: color, wireframe: false })
+    this.material = new THREE.MeshBasicMaterial({
+			color: 0xffddaa,
+			transparent: true,
+      opacity: 1,
+			fog: false
+		});
+    this.material.opacity = 1;
     this.mesh = new THREE.Mesh(this.geometry, this.material)
   }
 }

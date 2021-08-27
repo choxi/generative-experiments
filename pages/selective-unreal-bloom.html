@@ -98,16 +98,19 @@
 			bloomComposer.addPass(renderScene);
 			bloomComposer.addPass(bloomPass);
 
+			// Up to here, we have the bloom being rendered. We want to add back the original now.
+
 			const finalPass = new ShaderPass(
 				new THREE.ShaderMaterial({
 					uniforms: {
 						baseTexture: { value: null },
 						bloomTexture: { value: bloomComposer.renderTarget2.texture }
 					},
-					vertexShader: document.getElementById( 'vertexshader' ).textContent,
-					fragmentShader: document.getElementById( 'fragmentshader' ).textContent,
+					vertexShader: document.getElementById('vertexshader').textContent,
+					fragmentShader: document.getElementById('fragmentshader').textContent,
 					defines: {}
-				}), "baseTexture"
+				}),
+				"baseTexture"
 			);
 			finalPass.needsSwap = true;
 
